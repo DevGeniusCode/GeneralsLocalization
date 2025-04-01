@@ -36,7 +36,7 @@ def parse_file(input_file):
     # Open the input file
     with open(input_file, 'r', encoding='utf-8') as file:
         current_label = None
-        current_context = ""  # Default value for context
+        current_context = "TODO"  # Default value for context
 
         # Iterate through each line in the file
         for line in file:
@@ -76,7 +76,7 @@ def parse_file(input_file):
             # If we encounter the "END" keyword, reset current_label and context
             if line.strip() == "END":
                 current_label = None
-                current_context = ""  # Reset context after each block
+                current_context = "TODO"  # Reset context after each block
 
             # If the line contains a context (e.g. // context: Button to go to the game options screen)
             elif line.startswith("// context:"):
