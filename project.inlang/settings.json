@@ -4,10 +4,13 @@
   "languageTags": [
     "en",
     "ar",
+    "bp",
+    "co",
     "de",
     "es",
     "fr",
     "it",
+    "ko",
     "pl",
     "pt-BR",
     "ru",
@@ -18,6 +21,6 @@
     "https://cdn.jsdelivr.net/npm/@inlang/plugin-message-format@latest/dist/index.js"
   ],
   "plugin.inlang.messageFormat": {
-    "pathPattern": "./Patch104pZH/GameFilesEdited/Data/{languageTag}.json"
+    "pathPattern": "./localization/{languageTag}.json"
   }
 }
