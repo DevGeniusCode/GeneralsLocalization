@@ -30,6 +30,7 @@
     "pathPattern": "./localization/{languageTag}.json"
   },
   "plugin.inlang.json": {
+      "pathPattern": "./localization/{languageTag}.json",
       "variableReferencePattern": ["%", "&"]
   },
   "messageLintRuleLevels": {
