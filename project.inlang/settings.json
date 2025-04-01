@@ -27,11 +27,8 @@
     "https://cdn.jsdelivr.net/npm/@inlang/plugin-json@latest/dist/index.js"
   ],
   "plugin.inlang.messageFormat": {
-    "pathPattern": "./localization/{languageTag}.json"
-  },
-  "plugin.inlang.json": {
-      "pathPattern": "./localization/{languageTag}.json",
-      "variableReferencePattern": ["%", "&"]
+    "pathPattern": "./localization/{languageTag}.json",
+    "variableReferencePattern": ["%", "&"]
   },
   "messageLintRuleLevels": {
     "messageLintRule.inlang.missingTranslation": "error",
