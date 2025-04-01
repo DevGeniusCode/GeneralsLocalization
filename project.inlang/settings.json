@@ -27,7 +27,7 @@
   ],
   "plugin.inlang.messageFormat": {
     "pathPattern": "./localization/{languageTag}.json",
-    "variableReferencePattern": ["&:", "%:"]
+    "variableReferencePattern": ["{", "}"]
   },
   "messageLintRuleLevels": {
     "messageLintRule.inlang.missingTranslation": "error",
