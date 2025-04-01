@@ -2,9 +2,9 @@
   "$schema": "https://inlang.com/schema/project-settings",
   "sourceLanguageTag": "en",
   "languageTags": [
+    "co",
     "en",
     "ar",
-    "co",
     "de",
     "es",
     "fr",
