@@ -1,9 +1,31 @@
 import os
 import json
+import re
 
 # List of language codes we expect to encounter
 # CO stands for 'context' and is used to store context data for each label if provided
 language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CO']
+
+# List of format specifiers
+format_specifiers = [
+    "%u", "%c", "%s", "%S", "%ls", "%hs", "%.0f%%", "%d", "%dms", "%d%%", "%d:0%d",
+    "%d.%02d", "%d:%2.2d", "%d.%02d.%d", "%d:%02d:%02d", "\\n"
+]
+
+# Regular expression to match any of the format specifiers in the text
+format_regex = re.compile(r'(' + '|'.join(map(re.escape, format_specifiers)) + r')')
+
+
+def apply_format_specifiers(text):
+    """ Apply curly braces around format specifiers in the text, including '&' with adjacent characters """
+    # First, handle the '&' character that is followed by another character (e.g., &B, &O)
+    text = re.sub(r'&(\w)', r'{&\1}', text)  # Match & followed by a word character and wrap in {}
+
+    # Now handle the general format specifiers (like %d, %s, etc.)
+    text = format_regex.sub(r'{\1}', text)
+
+    return text
+
 
 def parse_file(input_file):
     # Dictionary to store translations for each language
@@ -41,6 +63,9 @@ def parse_file(input_file):
                     lang_code = lang_code.strip()
                     text = text.strip().strip('"')  # Remove quotes around the text
 
+                    # Apply the format specifier transformation
+                    text = apply_format_specifiers(text)
+
                     # If the language code is in our list, add the translation
                     if lang_code in translations:
                         translations[lang_code][current_label] = text
@@ -59,15 +84,21 @@ def parse_file(input_file):
 
     return translations
 
+
 def save_translations(translations, output_folder):
     # Ensure the output folder exists
     os.makedirs(output_folder, exist_ok=True)
 
     # Save each language's translations to its respective JSON file
     for lang_code, data in translations.items():
+        if lang_code == 'US':
+            lang_code = 'EN'
+        elif lang_code == 'BP':
+            lang_code = 'pt-BR'
         output_file = os.path.join(output_folder, f"{lang_code.lower()}.json")
         with open(output_file, 'w', encoding='utf-8') as json_file:
             json.dump(data, json_file, ensure_ascii=False, indent=4)
+
 
 def main(input_file, output_folder):
     # Parse the input file to get the translations
@@ -75,6 +106,7 @@ def main(input_file, output_folder):
 
     # Save the parsed translations to individual language JSON files
     save_translations(translations, output_folder)
+
 
 # Example usage:
 file_path = r"generals.str"
