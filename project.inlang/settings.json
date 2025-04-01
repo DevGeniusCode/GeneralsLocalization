@@ -1,11 +1,23 @@
 {
-    "$schema": "https://inlang.com/schema/project-settings",
-    "sourceLanguageTag": "en",
-    "languageTags": ["de", "en", "es", "fr", "ar", "ru", "uk"],
-    "modules": [
-        "https://cdn.jsdelivr.net/npm/@inlang/plugin-message-format@latest/dist/index.js"
-    ],
-    "plugin.inlang.messageFormat": {
-        "pathPattern": "./Patch104pZH/GameFilesEdited/Data/{languageTag}.json"
-    }
+  "$schema": "https://inlang.com/schema/project-settings",
+  "sourceLanguageTag": "en",
+  "languageTags": [
+    "en",
+    "ar",
+    "de",
+    "es",
+    "fr",
+    "it",
+    "pl",
+    "pt-BR",
+    "ru",
+    "uk",
+    "zh"
+  ],
+  "modules": [
+    "https://cdn.jsdelivr.net/npm/@inlang/plugin-message-format@latest/dist/index.js"
+  ],
+  "plugin.inlang.messageFormat": {
+    "pathPattern": "./Patch104pZH/GameFilesEdited/Data/{languageTag}.json"
+  }
 }
