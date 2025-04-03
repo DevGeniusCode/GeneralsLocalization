@@ -4,7 +4,7 @@ import re
 
 # List of language codes we expect to encounter
 # CO stands for 'context' and is used to store context data for each label if provided
-language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CO']
+language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CO', 'HE']
 
 # List of format specifiers
 format_specifiers = [
