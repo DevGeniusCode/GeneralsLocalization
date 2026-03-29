@@ -3,8 +3,8 @@ import json
 import re
 
 # List of language codes we expect to encounter
-# CO stands for 'context' and is used to store context data for each label if provided
-language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CO', 'HE']
+# CTX stands for 'context' and is used to store context data for each label if provided
+language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CTX', 'HE']
 
 # List of format specifiers
 format_specifiers = [
@@ -30,7 +30,7 @@ def apply_format_specifiers(text):
 def parse_file(input_file):
     # Dictionary to store translations for each language
     translations = {lang: {} for lang in language_codes}
-    # Dictionary to store context for the 'CO' language
+    # Dictionary to store context for the 'CTX' language
     context_data = {}
 
     # Open the input file
@@ -53,8 +53,8 @@ def parse_file(input_file):
             if ':' in line and not any(c in line for c in [' ', '"']):
                 # This is a label
                 current_label = line.strip()
-                # Add context for this label in 'CO' if a context was set
-                translations['CO'][current_label] = current_context
+                # Add context for this label in 'CTX' if a context was set
+                translations['CTX'][current_label] = current_context
             elif current_label:
                 # This is a translation line (e.g. US: "TEXT")
                 parts = line.split(':', 1)

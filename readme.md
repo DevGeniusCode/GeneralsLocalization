@@ -6,21 +6,21 @@ This repository utilizes **Fink (by Inlang)** to provide a streamlined, web-base
 
 You don't need to install any tools or clone the repository to contribute.
 
-1. **Access the Editor:** Open the [Fink Project Link](https://fink.inlang.com/github.com/DevGeniusCode/GeneralsLocalization?project=%2Fproject.inlang&lang=en&lang=co&lang=ru).
+1. **Access the Editor:** Open the [Fink Project Link](https://fink.inlang.com/github.com/DevGeniusCode/GeneralsLocalization?project=%2Fproject.inlang&lang=en&lang=ctx&lang=ru).
 2. **Sign In:** Authenticate with your GitHub account at the bottom of the page to enable editing.
 3. **Select Your Language:** Use the language filter to find your target language (e.g., TR, UK, SR).
 4. **Edit & Save:** Click on any string to modify the translation. Changes are synced directly via GitHub Pull Requests.
 
 ---
 
-## 📖 Using Context (CO: Strings)
+## 📖 Using Context (CTX: Strings)
 
-To ensure the highest translation quality, it is **highly recommended** to use the **CO** (Context/Comment) strings alongside the English text:
+To ensure the highest translation quality, it is **highly recommended** to use the **CTX** (Context/Comment) strings alongside the English text:
 
-* **What is CO?:** The `CO:` lines in the source file contain descriptions, developer notes, and explanations for each string.
+* **What is CTX?:** The `CTX:` lines in the source file contain descriptions, developer notes, and explanations for each string.
 * **Why use it?:** It clarifies whether a string is a button, a mission objective, a unit name, or a technical error message.
-* **How to view:** In the web interface, ensure the `CO` language/column is visible alongside `US` (English) and your target language. 
-* **Do not translate CO:** These strings are for reference only and should not be modified.
+* **How to view:** In the web interface, ensure the `CTX` language/column is visible alongside `US` (English) and your target language. 
+* **Do not translate CTX:** These strings are for reference only and should not be modified.
 
 ---
 
@@ -53,12 +53,12 @@ If you wish to test your translations in-game:
 The localization process uses a custom Python-based pipeline to bridge the gap between the legacy `.str` files and the modern Inlang/Fink web editor.
 
 ### 1. Extraction & Parsing
-We use a specialized script to convert the `generals.str` into individual JSON files (e.g., `en.json`, `tr.json`, `co.json`). 
+We use a specialized script to convert the `generals.str` into individual JSON files (e.g., `en.json`, `tr.json`, `ctx.json`). 
 
 * **Format Specifiers Protection:** To prevent accidental deletion of game variables during translation, the script automatically wraps format specifiers (like `%d`, `%s`, `\n`) and UI hotkeys (like `&B`) in **curly braces** `{}`. 
     * *Example:* `&Build` becomes `{&B}uild`.
     * *Example:* `Score: %d` becomes `Score: {%d}`.
-* **Context Injection:** The script extracts comments marked with `// context:` and maps them to the `co.json` file, allowing Fink to display them as reference notes for translators.
+* **Context Injection:** The script extracts comments marked with `// context:` and maps them to the `ctx.json` file, allowing Fink to display them as reference notes for translators.
 
 ### 2. Synchronization
 Once translations are completed in the web interface:
