@@ -3,7 +3,7 @@ import json
 import re
 
 # List of language codes in the order they should ideally appear
-language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CO', 'HE']
+language_codes = ['US', 'DE', 'FR', 'ES', 'IT', 'KO', 'ZH', 'BP', 'PL', 'RU', 'AR', 'UK', 'CTX', 'HE']
 
 # Exact same list of format specifiers from the original code
 format_specifiers = [
@@ -61,12 +61,12 @@ def load_translations(input_folder):
 
 
 def save_str_file(translations, output_file):
-    # We use 'CO' (Context) keys to preserve the original order of the labels
-    all_labels = list(translations.get('CO', {}).keys())
+    # We use 'CTX' (Context) keys to preserve the original order of the labels
+    all_labels = list(translations.get('CTX', {}).keys())
 
     # In case there are labels that somehow don't exist in 'CO', add them at the end
     for lang, data in translations.items():
-        if lang == 'CO':
+        if lang == 'CTX':
             continue
         for label in data.keys():
             if label not in all_labels:
@@ -76,7 +76,7 @@ def save_str_file(translations, output_file):
     with open(output_file, 'w', encoding='utf-8') as file:
         for label in all_labels:
             # 1. Write the Context if it exists and isn't "TODO"
-            context = translations['CO'].get(label, "TODO")
+            context = translations['CTX'].get(label, "TODO")
             if context and context != "TODO":
                 file.write(f"// context: {context}\n")
 
@@ -85,7 +85,7 @@ def save_str_file(translations, output_file):
 
             # 3. Write each translation for this label
             for lang in language_codes:
-                if lang == 'CO':
+                if lang == 'CTX':
                     continue  # CO is handled above
 
                 if label in translations[lang]:
