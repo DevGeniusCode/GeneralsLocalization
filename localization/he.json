@@ -405,7 +405,7 @@
     "GUI:PleaseEnterWOLInfo": "אנא הזן פרטים",
     "GUI:Username": "כינוי",
     "GUI:Server": "שרת",
-        "GUI:RememberPassword": "זכור את הסיסמה שלי",
+    "GUI:RememberPassword": "זכור את הסיסמה שלי",
     "GUI:CreateAccount": "צור חשבון",
     "GUI:TryAgain": "נסה שוב",
     "GUI:NetworkOptions": "אפשרויות רשת",
