@@ -48,28 +48,42 @@ If you wish to test your translations in-game:
 2. Use the **GameTextCompiler** to generate a `generals.csf`.
 3. Place the file in: `\Data\English\generals.csf`.
 
----## ⚙️ Technical Workflow (For Developers)
+---
 
-The localization process uses a custom Python-based pipeline to bridge the gap between the legacy `.str` files and the modern Inlang/Fink web editor.
+## ⚙️ Technical Workflow (For Developers & Maintainers)
 
-### 1. Extraction & Parsing
-We use a specialized script to convert the `generals.str` into individual JSON files (e.g., `en.json`, `tr.json`, `ctx.json`). 
+The localization process uses a custom Python-based pipeline to bridge the gap between the legacy `.str` file and the modern Inlang/Fink web editor. 
+
+### 🛡️ The "Core vs. Optional" Architecture (CRITICAL)
+To avoid overwriting community-driven manual fixes, the synchronization scripts follow a strict **"Golden Rule"**:
+* **`patch104p-core-begin` blocks:** These are strictly protected. The scripts will **ignore** these blocks entirely. They are neither exported to the JSON files nor overwritten by them. Core strings must be updated manually.
+* **`patch104p-optional-begin` blocks (and standard blocks):** These are managed automatically. The web editor is the "master" for these strings.
+
+### 1. Extracting to Web: `str2json.py`
+This script parses the master `generals.str` file and generates individual JSON files (e.g., `en.json`, `tr.json`, `ctx.json`) inside the `localization/` folder for the web editor to read.
 
 * **Format Specifiers Protection:** To prevent accidental deletion of game variables during translation, the script automatically wraps format specifiers (like `%d`, `%s`, `\n`) and UI hotkeys (like `&B`) in **curly braces** `{}`. 
     * *Example:* `&Build` becomes `{&B}uild`.
     * *Example:* `Score: %d` becomes `Score: {%d}`.
-* **Context Injection:** The script extracts comments marked with `// context:` and maps them to the `ctx.json` file, allowing Fink to display them as reference notes for translators.
+* **Context Injection:** Extracts comments marked with `// context:` and maps them to the `ctx.json` file.
+* **Usage:** Simply run `python str2json.py`. You can exclude specific languages from being exported by modifying the `langs_to_exclude` list inside the script.
 
-### 2. Synchronization
-Once translations are completed in the web interface:
-1.  The JSON files are updated in the repository.
-2.  The `json2str` tool converts these JSONs back into a single `generals.str`.
-3.  The final `.str` is compiled into a `.csf` for in-game use.
+### 2. Injecting from Web: `json2str.py`
+Once translations are updated in the web interface and synced to the repository, this script pulls the data from the `localization/*.json` files and injects it back into the master `generals.str` file.
 
+* **Safe Injection:** It reads the existing `generals.str` to preserve all original indentation, comments, and structure.
+* **Format Restoration:** It safely removes the protective `{}` braces from format specifiers.
+* **Usage:** Run `python json2str.py`. It will update the `generals.str` in place, skipping any blocks marked as *Core*.
+
+### 3. Final Compilation
+After running `json2str.py`, the finalized `generals.str` must be compiled into a `.csf` file using the GameTextCompiler for use in-game.
+
+---
 
 ## 🤝 Contributing
 We are currently looking for native speakers to verify:
 * **Ukrainian (UK)**
+* **Hebrew (IL)**
 * **Turkish (TR)**
 * **Serbian (SR)**
 * **Azerbaijani**
