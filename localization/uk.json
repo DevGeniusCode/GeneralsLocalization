@@ -745,7 +745,7 @@
     "TOOLTIP:ProfiledPlayer": "{%s}",
     "TOOLTIP:GenericPlayer": "{%s}",
     "TOOLTIP:IgnoredModifier": "(ігнорується)",
-    "TOOLTIP:PlayerInfo": "{\\n}Регіон: {%ls}{\\n}{%d} перемог/{%d} поразок",
+    "TOOLTIP:PlayerInfo": "{\\n}Регіон: {%s}{\\n}{%d} перемог/{%d} поразок",
     "TOOLTIP:GameInfoGameName": "Назва гри: {%s}",
     "TOOLTIP:GameInfoLadderName": "{\\n}Рейтинг: {%s}",
     "TOOLTIP:LadderName": "Рейтинг: {%s}",
