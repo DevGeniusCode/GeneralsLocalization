@@ -17,7 +17,7 @@ def main():
     en_path = os.path.join(loc_dir, "en.json")
 
     if not os.path.exists(en_path):
-        print("❌ Error: English source file (en.json) not found!")
+        print("Error: English source file (en.json) not found!")
         sys.exit(1)
 
     with open(en_path, 'r', encoding='utf-8') as f:
@@ -43,7 +43,7 @@ def main():
             expected_specs = en_specifiers[key]
 
             if target_specs != expected_specs:
-                print(f"❌ [Format Mismatch] File: {filename} | Key: '{key}'")
+                print(f"   [Format Mismatch] File: {filename} | Key: '{key}'")
                 print(f"   Expected tags: {expected_specs}")
                 print(f"   Found tags:    {target_specs}")
                 print(f"   EN Text:       {en_data[key]}")
@@ -54,7 +54,7 @@ def main():
         print("🚨 Validation failed! Format specifiers do not match.")
         sys.exit(1)
     else:
-        print("✅ Validation passed! All translations contain safe format specifiers.")
+        print("Validation passed! All translations contain safe format specifiers.")
 
 if __name__ == "__main__":
     main()
