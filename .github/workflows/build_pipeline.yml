@@ -138,3 +138,4 @@ jobs:
           body: "This is a rolling release. It automatically updates whenever translations are merged to main. Download your language `.big` file here!"
           allowUpdates: true # This is the magic flag! It prevents release spam.
           makeLatest: true
+          replacesArtifacts: true
