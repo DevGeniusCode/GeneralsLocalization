@@ -107,7 +107,7 @@ jobs:
               New-Item -ItemType Directory -Force -Path $csfDir | Out-Null
           
               $csfOutput = "$csfDir\generals.csf"
-              $bigOutput = "!generals_${strPrefix}.big"
+              $bigOutput = "_generals_${strPrefix}.big"
           
               # --- EXECUTE COMPILER ---
               # Based on provided CLI: -load_str_languages LANGUAGE -load_str FILE -save_csf FILE
