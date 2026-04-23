@@ -139,3 +139,4 @@ jobs:
           allowUpdates: true # This is the magic flag! It prevents release spam.
           makeLatest: true
           replacesArtifacts: true
+          removeArtifacts: true
