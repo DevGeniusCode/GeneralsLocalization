@@ -4,13 +4,32 @@ import re
 import sys
 
 def extract_specifiers(text):
+    """
+    Extracts critical game engine specifiers while ignoring layout-only
+    tags like newlines and normalizing UI hotkeys.
+    """
     if not isinstance(text, str):
         return []
-    # Extracts matched braces e.g. {%d}, {&c} and newlines \n
+
+    extracted = []
+    # Find all protected tags inside curly braces
     braces = re.findall(r'\{[^{}]+\}', text)
-    newlines = re.findall(r'\\n', text)
-    # Sort them to allow translators to change sentence structure/order safely
-    return sorted(braces + newlines)
+
+    for b in braces:
+        # 1. Ignore Line Breaks: They don't crash the engine if they differ
+        if b == r'{\n}':
+            continue
+
+        # 2. Normalize Hotkeys: Allow changing {&D} to {&U} based on language
+        elif re.match(r'^\{&.\}$', b):
+            extracted.append('{&}')
+
+        # 3. Keep Critical Variables: These MUST match (e.g., {%d}, {%s})
+        else:
+            extracted.append(b)
+
+    # Return sorted to allow translators to reorder variables in a sentence
+    return sorted(extracted)
 
 def main():
     loc_dir = "localization"
