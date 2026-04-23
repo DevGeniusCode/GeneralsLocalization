@@ -12,6 +12,8 @@ permissions:
 jobs:
   build-and-release:
     runs-on: windows-latest
+    env:
+      PYTHONIOENCODING: 'utf-8'
 
     steps:
       - name: Checkout Repository
@@ -33,11 +35,11 @@ jobs:
           commit_message: "Auto-update language codes in config files"
           file_pattern: "tools/json2str.py tools/str2json.py project.inlang/settings.json localization/*.json"
 
-      - name: Step 1b - Validate Format Specifiers (Critical Gate)
+      - name: Step 1b - Validate Format Specifiers (Fault Tolerant)
         run: python tools/validate_format.py
 
       - name: Step 2 - Sync & Build Master STR
-        run: python json2str.py
+        run: python tools/json2str.py
 
       - name: Step 3 & 4 - Compile CSF and Package BIG files
         id: compile_pack
@@ -67,12 +69,12 @@ jobs:
               "ar"="AR"; "uk"="UK"; "sv"="SV"; "se"="SV"; "he"="HE"
           }
 
-          # 3. Iterate through all localization JSONs
+          # 3. Iterate only through the JSON files that SURVIVED the validation step
           $jsonFiles = Get-ChildItem -Path localization\*.json
           
           foreach ($file in $jsonFiles) {
               $langKey = $file.BaseName.ToLower()
-              if ($langKey -eq "ctx") { continue } # Skip context file
+              if ($langKey -eq "ctx" -or $langKey -eq "en") { continue } # Skip context and base english
           
               # Resolve properties
               $compilerLang = if ($compilerLangs.ContainsKey($langKey)) { $compilerLangs[$langKey] } else { "English" }
@@ -106,12 +108,15 @@ jobs:
           name: compiled-big-files
           path: "*.big"
           retention-days: 7
+          if-no-files-found: ignore # Prevents failure if no .big files were created
 
-      - name: Release Artifacts (On Main Merge)
+      - name: Release Latest Artifacts (On Main Merge)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
+        uses: ncipollo/release-action@v1 # Switched to a better action that supports overwriting
         with:
-          files: "*.big"
-          tag_name: "latest"
+          artifacts: "*.big"
+          tag: "latest"
           name: "Latest Localization Build"
-          body: "Automated localization build containing compiled `.big` files for all active languages."
+          body: "This is a rolling release. It automatically updates whenever translations are merged to main. Download your language `.big` file here!"
+          allowUpdates: true # This is the magic flag! It prevents release spam.
+          makeLatest: true

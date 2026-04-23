@@ -91,7 +91,7 @@ def process_imports():
             os.makedirs(loc_dir, exist_ok=True)
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(translations, f, indent=4, ensure_ascii=False)
-            print(f"Imported and mapped {lang_code.upper()} language.")
+            print(f"✅ Imported and mapped {lang_code.upper()} language.")
             update_python_and_settings(lang_code)
 
 if __name__ == "__main__":

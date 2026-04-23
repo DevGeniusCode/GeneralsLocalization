@@ -17,7 +17,7 @@ def main():
     en_path = os.path.join(loc_dir, "en.json")
 
     if not os.path.exists(en_path):
-        print("Error: English source file (en.json) not found!")
+        print("❌ Error: English source file (en.json) not found!")
         sys.exit(1)
 
     with open(en_path, 'r', encoding='utf-8') as f:
@@ -25,13 +25,17 @@ def main():
 
     # Pre-calculate english format specifiers
     en_specifiers = {k: extract_specifiers(v) for k, v in en_data.items() if v}
-    has_errors = False
+    total_files = 0
+    failed_files = []
 
     for filename in os.listdir(loc_dir):
         if filename in ["en.json", "ctx.json"] or not filename.endswith('.json'):
             continue
 
+        total_files += 1
         filepath = os.path.join(loc_dir, filename)
+        has_errors_in_file = False
+
         with open(filepath, 'r', encoding='utf-8') as f:
             lang_data = json.load(f)
 
@@ -43,18 +47,23 @@ def main():
             expected_specs = en_specifiers[key]
 
             if target_specs != expected_specs:
-                print(f"   [Format Mismatch] File: {filename} | Key: '{key}'")
+                print(f"❌ [Format Mismatch] File: {filename} | Key: '{key}'")
                 print(f"   Expected tags: {expected_specs}")
                 print(f"   Found tags:    {target_specs}")
                 print(f"   EN Text:       {en_data[key]}")
                 print(f"   Target Text:   {translated_text}\n")
-                has_errors = True
+                has_errors_in_file = True
 
-    if has_errors:
-        print("🚨 Validation failed! Format specifiers do not match.")
-        sys.exit(1)
+        if has_errors_in_file:
+            print(f"🚨 Removing {filename} from the build process due to format errors.")
+            failed_files.append(filename)
+            os.remove(filepath) # Remove the file so json2str.py skips it
+
+    if failed_files:
+        print(f"\n⚠️ Validation completed with warnings! The following files were skipped: {', '.join(failed_files)}")
+        # Notice we removed sys.exit(1) so the action continues for the valid files.
     else:
-        print("Validation passed! All translations contain safe format specifiers.")
+        print(f"\n✅ Validation passed for all {total_files} language files!")
 
 if __name__ == "__main__":
     main()
