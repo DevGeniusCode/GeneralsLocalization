@@ -2999,7 +2999,7 @@
     "CONTROLBAR:ConstructAmericaVehicleSentryDrone": "Drone sentinelle: {&S}",
     "CONTROLBAR:Boss_ConstructAmericaVehicleSentryDrone": "Drone sentinelle: {&S}",
     "CONTROLBAR:ConstructAmericaVehicleHellfireDrone": "Drone lance-missile: {&N}",
-    "CONTROLBAR:ConstructAmericaVehiclePointDefenseDrone": "Not to be translated",
+    "CONTROLBAR:ConstructAmericaVehiclePointDefenseDrone": "Drone de défense : {&D}",
     "CONTROLBAR:ConstructChinaVehicleHelix": "Hélix: {&X}",
     "CONTROLBAR:Nuke_ConstructChinaVehicleHelix": "Hélix atomique: {&X}",
     "CONTROLBAR:Boss_ConstructChinaVehicleHelix": "Hélix: {&X}",

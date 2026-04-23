@@ -90,7 +90,7 @@ You no longer need to download compilers or manipulate files locally.
 If you just want to download the latest completed translation packs to play the game:
 
 1. Navigate to the [Releases](../../releases) section of this repository.
-2. Download the `.big` file for your specific language (e.g., `generals_PL.big`).
+2. Download the `.big` file for your specific language (e.g., `!generals_PL.big`).
 3. Place the file inside your game directory. The engine will load it automatically.
 
 ---
