@@ -1,0 +1,117 @@
+name: C&C Generals Localization Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write # Required to auto-commit language code updates
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Step 1a - Import Legacy STR & Update Scripts
+        run: python tools/import_new_lang.py
+
+      - name: Auto-commit Script Updates (If new language added)
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-update language codes in config files"
+          file_pattern: "tools/json2str.py tools/str2json.py project.inlang/settings.json localization/*.json"
+
+      - name: Step 1b - Validate Format Specifiers (Critical Gate)
+        run: python tools/validate_format.py
+
+      - name: Step 2 - Sync & Build Master STR
+        run: python json2str.py
+
+      - name: Step 3 & 4 - Compile CSF and Package BIG files
+        id: compile_pack
+        shell: pwsh
+        run: |
+          # 1. Map JSON filenames to the Compiler's exact Language Enum
+          $compilerLangs = @{
+              "en"="English"; "us"="English"; 
+              "de"="German"; "fr"="French"; "es"="Spanish"; "it"="Italian"; 
+              "ko"="Korean"; "zh"="Chinese"; "pl"="Polish"; "ru"="Russian";
+              "pt-br"="Brazilian"; "bp"="Brazilian"; 
+              "ar"="Arabic"; "uk"="Ukrainian"; "sv"="Swedish"; "se"="Swedish"; 
+              "he"="Hebrew"
+          }
+          
+          # 2. Define Official EA Languages Mapping (Determines internal BIG folder structure)
+          # Non-EA languages fallback to the "English" folder structure to work properly in-game.
+          $eaLangs = @(
+              "English", "German", "French", "Spanish", "Italian", 
+              "Korean", "Chinese", "Polish", "Russian"
+          )
+
+          # Output Prefix Mapping for the final .big filename (generals_US.big, generals_DE.big)
+          $strPrefixes = @{
+              "en"="US"; "us"="US"; "pt-br"="BP"; "bp"="BP"; "de"="DE"; "fr"="FR"; 
+              "es"="ES"; "it"="IT"; "ko"="KO"; "zh"="ZH"; "pl"="PL"; "ru"="RU"; 
+              "ar"="AR"; "uk"="UK"; "sv"="SV"; "se"="SV"; "he"="HE"
+          }
+
+          # 3. Iterate through all localization JSONs
+          $jsonFiles = Get-ChildItem -Path localization\*.json
+          
+          foreach ($file in $jsonFiles) {
+              $langKey = $file.BaseName.ToLower()
+              if ($langKey -eq "ctx") { continue } # Skip context file
+          
+              # Resolve properties
+              $compilerLang = if ($compilerLangs.ContainsKey($langKey)) { $compilerLangs[$langKey] } else { "English" }
+              $strPrefix = if ($strPrefixes.ContainsKey($langKey)) { $strPrefixes[$langKey] } else { $langKey.ToUpper() }
+              $internalFolder = if ($eaLangs -contains $compilerLang) { $compilerLang } else { "English" }
+          
+              Write-Host "--> Processing: $langKey | Compiler Enum: $compilerLang | Internal Path: data\$internalFolder\generals.csf"
+          
+              # 4. Create isolated folder structure for the BIG packager
+              $tempDir = "temp_big\$langKey"
+              $csfDir = "$tempDir\data\$internalFolder"
+              New-Item -ItemType Directory -Force -Path $csfDir | Out-Null
+          
+              $csfOutput = "$csfDir\generals.csf"
+              $bigOutput = "generals_${strPrefix}.big"
+          
+              # --- EXECUTE COMPILER ---
+              # Based on provided CLI: -load_str_languages LANGUAGE -load_str FILE -save_csf FILE
+              Write-Host "    Compiling .csf..."
+              .\tools\GameTextCompiler.exe -load_str_languages $compilerLang -load_str generals.str -save_csf $csfOutput
+          
+              # --- EXECUTE BIG CREATOR ---
+              # Based on provided CLI: -source PATH -dest PATH
+              Write-Host "    Packing .big archive..."
+              .\tools\GeneralsBigCreator.exe -source $tempDir -dest $bigOutput
+          }
+
+      - name: Upload Artifacts (Pull Requests)
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-big-files
+          path: "*.big"
+          retention-days: 7
+
+      - name: Release Artifacts (On Main Merge)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "*.big"
+          tag_name: "latest"
+          name: "Latest Localization Build"
+          body: "Automated localization build containing compiled `.big` files for all active languages."
