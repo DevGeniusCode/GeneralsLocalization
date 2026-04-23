@@ -82,10 +82,14 @@ def main():
             os.remove(filepath) # Remove the file so json2str.py skips it
 
     if failed_files:
-        print(f"\n⚠️ Validation completed with warnings! The following files were skipped: {', '.join(failed_files)}")
+#         print(f"\n⚠️ Validation completed with warnings! The following files were skipped: {', '.join(failed_files)}")
         # Notice we removed sys.exit(1) so the action continues for the valid files.
+        with open("failed_langs.txt", "w") as f:
+            f.write("\n".join(failed_files))
     else:
-        print(f"\n✅ Validation passed for all {total_files} language files!")
+      if os.path.exists("failed_langs.txt"):
+              os.remove("failed_langs.txt")
+      print(f"\n✅ Validation passed for all {total_files} language files!")
 
 if __name__ == "__main__":
     main()

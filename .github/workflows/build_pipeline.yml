@@ -38,6 +38,24 @@ jobs:
       - name: Step 1b - Validate Format Specifiers (Fault Tolerant)
         run: python tools/validate_format.py
 
+      - name: Create Build Summary
+        if: always() # Ensure this runs even if previous steps fail to provide feedback on what went wrong
+        shell: pwsh
+        run: |
+          echo "## 🌍 Localization Build Status" >> $env:GITHUB_STEP_SUMMARY
+          if (Test-Path "failed_langs.txt") {
+            $failed = Get-Content "failed_langs.txt"
+            echo "### ⚠️ Skipped Languages (Errors Found):" >> $env:GITHUB_STEP_SUMMARY
+            foreach ($lang in $failed) {
+              echo "- ❌ $lang" >> $env:GITHUB_STEP_SUMMARY
+            }
+            echo "" >> $env:GITHUB_STEP_SUMMARY
+            echo "> [!CAUTION]" >> $env:GITHUB_STEP_SUMMARY
+            echo "> The languages above were **not** included in the .big files to prevent game crashes." >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            echo "### ✅ All languages compiled successfully!" >> $env:GITHUB_STEP_SUMMARY
+          }
+
       - name: Step 2 - Sync & Build Master STR
         run: python tools/json2str.py
 
