@@ -74,7 +74,7 @@ jobs:
           
           foreach ($file in $jsonFiles) {
               $langKey = $file.BaseName.ToLower()
-              if ($langKey -eq "ctx" -or $langKey -eq "en") { continue } # Skip context and base english
+              if ($langKey -eq "ctx") { continue } 
           
               # Resolve properties
               $compilerLang = if ($compilerLangs.ContainsKey($langKey)) { $compilerLangs[$langKey] } else { "English" }

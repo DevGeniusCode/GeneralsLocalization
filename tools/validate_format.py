@@ -11,6 +11,9 @@ def extract_specifiers(text):
     if not isinstance(text, str):
         return []
 
+    # Ignore the false-positive "C&C" hotkey wrapper
+    text = text.replace('C{&C}', '')
+
     extracted = []
     # Find all protected tags inside curly braces
     braces = re.findall(r'\{[^{}]+\}', text)
